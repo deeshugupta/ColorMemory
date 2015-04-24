@@ -55,6 +55,9 @@ public class MainActivity extends Activity {
 	//Number of Maximum Touches. Changes with every level
 	int maxTouch;
 	
+	//Back pressed Number
+	int backPressed=0;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -162,6 +165,7 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 			v.performClick();
+			backPressed=0;
 			ImageView imageView = (ImageView) v;
 			bitmap = ((BitmapDrawable)imageView.getBackground()).getBitmap();
 		 	int x = (int)event.getX();
@@ -243,5 +247,18 @@ public class MainActivity extends Activity {
 		AnimatorSet animSet = new AnimatorSet();
 		animSet.playSequentially(items);
 		animSet.start();
+	}
+	@Override
+	public void onBackPressed(){
+		if(backPressed!=1){
+			Toast.makeText(this, "Press back again to go to main menu.", Toast.LENGTH_SHORT).show();
+			backPressed++;
+		}
+		else{
+			Intent intent = new Intent(getApplicationContext(), Launch.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.putExtra("EXIT", true);
+			startActivity(intent);
+		}
 	}
 }
