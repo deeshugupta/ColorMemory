@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
@@ -16,8 +17,11 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LevelResult extends Activity {
+
+	private int backPressed = 0;
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 	@Override
@@ -25,26 +29,33 @@ public class LevelResult extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_level_result);
 		
+		Typeface startFace = Typeface.createFromAsset(getAssets(),
+	            "fonts/Quicksand-Bold.otf");
 //		ImageView correct = (ImageView) findViewById(R.id.Correct);
 //		ImageView wrong = (ImageView) findViewById(R.id.Wrong);
 		TextView correct = (TextView) findViewById(R.id.Correct);
+		correct.setTypeface(startFace);
 		ShapeDrawable correctDrawable = new ShapeDrawable(new OvalShape());
 //		correctDrawable.getPaint().setColor(Color.TRANSPARENT);
 //		correct.setBackground(correctDrawable);
 		TextView wrong = (TextView) findViewById(R.id.Wrong);
+		wrong.setTypeface(startFace);
 		ShapeDrawable wrongDrawable = new ShapeDrawable(new OvalShape());
 //		wrongDrawable.getPaint().setColor(Color.TRANSPARENT);
 //		wrong.setBackground(wrongDrawable);
 		
 		Button continueButton = (Button) findViewById(R.id.Continue);
 		TextView result = (TextView) findViewById(R.id.Result);
-		
+		result.setTypeface(startFace);
+		result.setTextSize(40f);
+		continueButton.setTypeface(startFace);
 		Intent intent = getIntent();
 		final int level = intent.getExtras().getInt("level");
 		String Result = intent.getExtras().getString("Result");
 		
 		if("Failed".equals(Result)){
 			result.setText("Level "+level+" - Failed");
+			result.setTextColor(Color.parseColor("#CC0000"));
 			continueButton.setText("START AGAIN");
 			continueButton.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 			continueButton.setOnClickListener(new OnClickListener() {
@@ -75,6 +86,7 @@ public class LevelResult extends Activity {
 		}
 		else{
 			result.setText("Level "+level+" - Passed");
+			result.setTextColor(Color.parseColor("#006B24"));
 			continueButton.setText("CONTINUE");
 			continueButton.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 			continueButton.setOnClickListener(new OnClickListener() {
@@ -115,5 +127,19 @@ public class LevelResult extends Activity {
 		int blue = Color.blue(color);
 		double y = (299 * red + 587 * green + 114 * blue) / 1000;
 		return y >= 128 ? Color.BLACK : Color.WHITE;
+	}
+	
+	@Override
+	public void onBackPressed(){
+		if(backPressed !=1){
+			Toast.makeText(this, "Press back again to go to main menu.", Toast.LENGTH_SHORT).show();
+			backPressed++;
+		}
+		else{
+			Intent intent = new Intent(getApplicationContext(), Launch.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.putExtra("EXIT", true);
+			startActivity(intent);
+		}
 	}
 }
