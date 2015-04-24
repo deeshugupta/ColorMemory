@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ColorMemory</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_launch">Launch</string>
+    <string name="title_activity_level_result">LevelResult</string>
+    <string name="game_start">START</string>
+    <string name="game_settings">SETTINGS</string>
+
+</resources>

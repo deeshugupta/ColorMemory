@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    tools:context="com.colortap.ui.MainActivity"
+    android:orientation="vertical"   
+    android:id="@+id/game" >
+    
+<!--     <GridView  -->
+<!--     android:id="@+id/gridview" -->
+<!--     android:layout_width="match_parent" -->
+<!--     android:layout_height="match_parent" -->
+<!--     android:columnWidth="90dp" -->
+<!--     android:numColumns="3" -->
+<!--     android:rowCount="6" -->
+<!--     android:verticalSpacing="10dp" -->
+<!--     android:horizontalSpacing="10dp" -->
+<!--     android:stretchMode="columnWidth" -->
+<!--     android:gravity="center" -->
+<!-- /> -->
+<LinearLayout 
+    
+    android:id="@+id/animLayout"
+    android:layout_width="fill_parent"
+	android:layout_height="@dimen/aboveLayout"
+	android:layout_margin="@dimen/circleMargin"
+	android:gravity="center"
+	>
+   <ImageView
+            android:id="@+id/imageView1"
+			android:layout_width="@dimen/maincircle"
+			android:layout_height="@dimen/maincircle"
+			android:layout_margin="@dimen/circleMargin" />
+<!-- 			android:background="@drawable/circle"  -->
+			
+   
+   </LinearLayout>
+</LinearLayout>

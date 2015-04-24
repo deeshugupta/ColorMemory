@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+        <TableRow
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/tableCircle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            >
+          <ImageView
+            android:id="@+id/Circle1"
+			android:layout_width="@dimen/circle"
+			android:layout_height="@dimen/circle"
+			android:background="@drawable/circle"
+			android:layout_margin="@dimen/circleMargin" />
+         <ImageView
+            android:id="@+id/Circle2"
+			android:layout_width="@dimen/circle"
+			android:layout_height="@dimen/circle"
+			android:background="@drawable/circle"
+			android:layout_margin="@dimen/circleMargin" />
+         <ImageView
+            android:id="@+id/Circle3"
+			android:layout_width="@dimen/circle"
+			android:layout_height="@dimen/circle"
+			android:background="@drawable/circle"
+			android:layout_margin="@dimen/circleMargin" />
+         <ImageView
+            android:id="@+id/Circle4"
+			android:layout_width="@dimen/circle"
+			android:layout_height="@dimen/circle"
+			android:background="@drawable/circle"
+			android:layout_margin="@dimen/circleMargin" />
+         <ImageView
+            android:id="@+id/Circle5"
+			android:layout_width="@dimen/circle"
+			android:layout_height="@dimen/circle"
+			android:background="@drawable/circle"
+			android:layout_margin="@dimen/circleMargin" />
+
+           
+
+        </TableRow>
+
