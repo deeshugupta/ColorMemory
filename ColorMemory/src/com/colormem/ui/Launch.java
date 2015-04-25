@@ -3,17 +3,18 @@ package com.colormem.ui;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
+import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.Gravity;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.SeekBar;
+import android.widget.TextView;
 
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 public class Launch extends Activity {
 
 	@Override
@@ -21,46 +22,37 @@ public class Launch extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launch);
 		
+		TextView heading = (TextView) findViewById(R.id.heading);
+		Typeface headingFace = Typeface.createFromAsset(getAssets(),
+	            "fonts/KaushanScript-Regular.otf");
+		heading.setTypeface(headingFace);
+		heading.setText("COLOR MEMORY");
+		heading.setGravity(Gravity.CENTER);
+		heading.setTextSize(40f);
+		
 		
 		Typeface startFace = Typeface.createFromAsset(getAssets(),
-	            "fonts/Quicksand-Bold.otf");
+	            "fonts/KaushanScript-Regular.otf");
 		Button startGame = (Button) findViewById(R.id.gamestarter);
 		startGame.setText("START");
-		startGame.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+		startGame.setGravity(Gravity.CENTER);
 		
 		startGame.setTypeface(startFace);
 	
 		startGame.setOnClickListener(new Onclick());
 		Button settingsGame = (Button) findViewById(R.id.gamesettings);
 		settingsGame.setText("SETTINGS");
-		settingsGame.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+		settingsGame.setGravity(Gravity.CENTER);
 		settingsGame.setTypeface(startFace);
 		
 		Button exitGame = (Button) findViewById(R.id.gameExit);
 		exitGame.setText("EXIT");
-		exitGame.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+		exitGame.setGravity(Gravity.CENTER);
 		exitGame.setTypeface(startFace);
 		exitGame.setOnClickListener(new Onclick());
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.launch, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+	
 	
 	@Override
 	public void onBackPressed(){

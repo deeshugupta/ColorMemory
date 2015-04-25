@@ -23,26 +23,19 @@ public class LevelResult extends Activity {
 
 	private int backPressed = 0;
 
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_level_result);
 		
 		Typeface startFace = Typeface.createFromAsset(getAssets(),
-	            "fonts/Quicksand-Bold.otf");
-//		ImageView correct = (ImageView) findViewById(R.id.Correct);
-//		ImageView wrong = (ImageView) findViewById(R.id.Wrong);
+	            "fonts/KaushanScript-Regular.otf");
 		TextView correct = (TextView) findViewById(R.id.Correct);
 		correct.setTypeface(startFace);
 		ShapeDrawable correctDrawable = new ShapeDrawable(new OvalShape());
-//		correctDrawable.getPaint().setColor(Color.TRANSPARENT);
-//		correct.setBackground(correctDrawable);
 		TextView wrong = (TextView) findViewById(R.id.Wrong);
 		wrong.setTypeface(startFace);
 		ShapeDrawable wrongDrawable = new ShapeDrawable(new OvalShape());
-//		wrongDrawable.getPaint().setColor(Color.TRANSPARENT);
-//		wrong.setBackground(wrongDrawable);
 		
 		Button continueButton = (Button) findViewById(R.id.Continue);
 		TextView result = (TextView) findViewById(R.id.Result);
@@ -57,7 +50,7 @@ public class LevelResult extends Activity {
 			result.setText("Level "+level+" - Failed");
 			result.setTextColor(Color.parseColor("#CC0000"));
 			continueButton.setText("START AGAIN");
-			continueButton.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+			continueButton.setGravity(Gravity.CENTER);
 			continueButton.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -88,7 +81,7 @@ public class LevelResult extends Activity {
 			result.setText("Level "+level+" - Passed");
 			result.setTextColor(Color.parseColor("#006B24"));
 			continueButton.setText("CONTINUE");
-			continueButton.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+			continueButton.setGravity(Gravity.CENTER);
 			continueButton.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -102,24 +95,7 @@ public class LevelResult extends Activity {
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.level_result, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+	
 	
 	private int getTextColor(int color){
 		int red = Color.red(color);

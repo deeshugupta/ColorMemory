@@ -42,11 +42,12 @@
 
     <TextView
         android:id="@+id/Result"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="86dp" />
+        android:layout_marginTop="86dp"
+        android:gravity="center" />
 
     <Button
         android:id="@+id/Continue"
