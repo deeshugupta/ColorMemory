@@ -1,5 +1,6 @@
 package com.colormem.ui;
 
+import com.colormem.database.UserDAO;
 import com.colormem.text.SetTextFeatures;
 
 import android.annotation.TargetApi;
@@ -24,14 +25,42 @@ import android.widget.Toast;
 public class LevelResult extends Activity {
 
 	private int backPressed = 0;
+	
+	//Intent Values
+	String userName;
+	Long level;
+	Long cheats;
+	
+	//Database 
+	UserDAO userDAO;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_level_result);
 		
+		//Getting Intents
+		Intent intent = getIntent();
+		String Result = intent.getExtras().getString("Result");
+		userName = intent.getExtras().getString("UserName");
+		level = intent.getLongExtra("Level", 0l);
+		cheats = intent.getLongExtra("Cheats", 0l);
+		
+		//Saving values to Database
+		userDAO = new UserDAO(LevelResult.this);
+		userDAO.open();
+		
+		//Update values for user
+		userDAO.updateCheats(userName, cheats);
+		
+		
+		
+		//Setting TypeFace
 		Typeface startFace = Typeface.createFromAsset(getAssets(),
 	            "fonts/KaushanScript-Regular.otf");
+		TextView username = (TextView) findViewById(R.id.result_user);
+		SetTextFeatures.setFeatures(username, startFace, "USER : "+userName, 15f);
+		
 		TextView correct = (TextView) findViewById(R.id.Correct);
 		correct.setTypeface(startFace);
 		ShapeDrawable correctDrawable = new ShapeDrawable(new OvalShape());
@@ -43,9 +72,7 @@ public class LevelResult extends Activity {
 		TextView result = (TextView) findViewById(R.id.Result);
 		SetTextFeatures.setFeatures(result, startFace, "", 40f);
 		
-		Intent intent = getIntent();
-		final int level = intent.getExtras().getInt("level");
-		String Result = intent.getExtras().getString("Result");
+		
 		
 		if("Failed".equals(Result)){
 			result.setText("Level "+level+" - Failed");
@@ -56,6 +83,7 @@ public class LevelResult extends Activity {
 				
 				@Override
 				public void onClick(View v) {
+					userDAO.close();
 					startActivity(new Intent(LevelResult.this, Launch.class));
 					
 				}
@@ -79,6 +107,7 @@ public class LevelResult extends Activity {
 			
 		}
 		else{
+			userDAO.updateLevel(userName, level);
 			result.setText("Level "+level+" - Passed");
 			result.setTextColor(Color.parseColor("#006B24"));
 			SetTextFeatures.setFeatures(continueButton, startFace, "CONTINUE");
@@ -87,8 +116,11 @@ public class LevelResult extends Activity {
 				
 				@Override
 				public void onClick(View v) {
+					userDAO.close();
 					Intent intent = new Intent(LevelResult.this, MainActivity.class);
 					intent.putExtra("Level", level+1);
+					intent.putExtra("UserName", userName);
+					intent.putExtra("Cheats", cheats);
 					startActivity(intent);
 					
 				}

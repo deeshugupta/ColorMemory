@@ -53,8 +53,7 @@ public class MainActivity extends Activity {
 	//number for Touch Sequence generation
 	int touch=0;
 	
-	//Level at which we are playing
-	int level=0;
+	
 	
 	Bitmap bitmap;
 	BitmapDrawable bitmapDrawable;
@@ -71,18 +70,36 @@ public class MainActivity extends Activity {
 	//Cheat Touch iterator
 	int cheatTouch =0;
 	
+	//UserName for which the game is being played
+	String userName;
+	
+	//Level at which we are playing
+	Long level=0l;
+		
+	//Cheats remaining
+	Long cheats=0l;	
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		//GETTING All INTENT DATA
+		userName = getIntent().getExtras().getString("UserName");
+		level = getIntent().getLongExtra("Level", 1l);
+		cheats = getIntent().getLongExtra("Cheats", 1l);
+		
+		//Defining TypeFace for Text
 		dialog_butons = Typeface.createFromAsset(getAssets(),
 	            "fonts/KaushanScript-Regular.otf");
 		
 		final Button cheatButton = (Button) findViewById(R.id.cheat);
 		cheatButton.setVisibility(View.INVISIBLE);
 		
+		final TextView username = (TextView) findViewById(R.id.main_user);
+		username.setVisibility(View.INVISIBLE);
+		SetTextFeatures.setFeatures(username, dialog_butons, "USER : "+userName, 15f);
 		
 		final TextView timer = (TextView) findViewById(R.id.timer);
 		timer.setVisibility(View.INVISIBLE);
@@ -98,8 +115,8 @@ public class MainActivity extends Activity {
 		 * will be changed accordingly.
 		 * The comments will be changed accordingly also.
 		 */
-		level = getIntent().getIntExtra("Level", 1);
-		maxTouch= level;
+		
+		maxTouch= level.intValue();
 		touchSequence=new int[maxTouch];
 		
 		/*
@@ -154,7 +171,7 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				animdialog.dismiss();
 				//Setting up the grid 
-				setupGrid(cheatButton,timer);
+				setupGrid(cheatButton,timer,username);
 			}
 		});
 		
@@ -189,7 +206,7 @@ public class MainActivity extends Activity {
 	}
 
 // =============================== Function for Setting up the GRID of colors ========================//
-	private void setupGrid(Button cheatButton, final TextView timer){
+	private void setupGrid(Button cheatButton, final TextView timer, TextView username){
 		LinearLayout gameLayout  = (LinearLayout) findViewById(R.id.game);
 		
 		//Defining rows
@@ -199,11 +216,12 @@ public class MainActivity extends Activity {
 			setView((TableRow)child1,row);
 			gameLayout.addView(child1);
 			}
+		username.setVisibility(View.VISIBLE);
 		cheatButton.setVisibility(View.VISIBLE);
-		cheatButton.setOnClickListener(new OnClickListner());
+		cheatButton.setOnClickListener(new OnClickListner(cheatButton));
 		timer.setVisibility(View.VISIBLE);
 		SetTextFeatures.setFeatures(timer, dialog_butons, "", 40f);
-		SetTextFeatures.setFeatures(cheatButton, dialog_butons, "CHEATS : ");
+		SetTextFeatures.setFeatures(cheatButton, dialog_butons, "CHEATS : "+cheats.toString());
 		new CountDownTimer(31000,1000) {
 			
 			@Override
@@ -267,7 +285,9 @@ public class MainActivity extends Activity {
 	        else if(touched<maxTouch && touchSequence[touched]!=color){
 	        	Toast.makeText(MainActivity.this, "Wrong Sequence", Toast.LENGTH_SHORT).show();
 	        	intent.putExtra("Result", "Failed");
-	        	intent.putExtra("level", level);
+	        	intent.putExtra("UserName", userName);
+				intent.putExtra("Level", level);
+				intent.putExtra("Cheats", cheats);
 	        	intent.putExtra("CorrectColor", touchSequence[touched]);
 	        	intent.putExtra("WrongColor", color);
 	        	startActivity(intent);
@@ -276,7 +296,9 @@ public class MainActivity extends Activity {
 	        if(touched == maxTouch){
 	        	Toast.makeText(MainActivity.this, "Correctly done", Toast.LENGTH_SHORT).show();
 	        	intent.putExtra("Result", "Passed");
-	        	intent.putExtra("level", level);
+	        	intent.putExtra("UserName", userName);
+				intent.putExtra("Level", level);
+				intent.putExtra("Cheats", cheats);
 	        	startActivity(intent);
 	        }
 	        return false;
@@ -365,10 +387,17 @@ public class MainActivity extends Activity {
 	
 //================================ Cheat Button CLick Listener ==========================================//
 	private class OnClickListner implements OnClickListener{
+		
+		Button cheatButton;
+		public OnClickListner(Button cheatButton) {
+			this.cheatButton=cheatButton;
+		}
 
 		@Override
 		public void onClick(View v) {
 			if(v.getId()==R.id.cheat){
+				cheats--;
+				SetTextFeatures.setFeatures(cheatButton, dialog_butons, "CHEATS : "+cheats.toString());
 				final Dialog animdialog = new Dialog(MainActivity.this);
 				animdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				View animDialogView = getLayoutInflater().inflate(R.layout.dialog_color_animation, null);

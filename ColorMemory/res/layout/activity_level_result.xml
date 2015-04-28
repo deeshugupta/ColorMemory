@@ -57,4 +57,13 @@
         android:layout_centerVertical="true"
         android:background="@drawable/launch_button_selector" />
 
+    <TextView
+        android:id="@+id/result_user"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/linearLayout1"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="22dp"
+        android:text="User" />
+
 </RelativeLayout>

@@ -20,7 +20,7 @@
             android:background="@drawable/launch_button_selector" />
 
         <Button
-            android:id="@+id/gameExit"
+            android:id="@+id/gameStats"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/gamesettings"
@@ -32,7 +32,7 @@
             android:id="@+id/gamesettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/gameExit"
+            android:layout_above="@+id/gameStats"
             android:layout_alignLeft="@+id/gamestarter"
             android:layout_marginBottom="46dp"
             android:background="@drawable/launch_button_selector" />
