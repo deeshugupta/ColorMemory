@@ -1,5 +1,7 @@
 package com.colormem.ui;
 
+import com.colormem.text.SetTextFeatures;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -22,33 +24,23 @@ public class Launch extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launch);
 		
+		Typeface typeFace = Typeface.createFromAsset(getAssets(),
+	            "fonts/KaushanScript-Regular.otf");
+		
 		TextView heading = (TextView) findViewById(R.id.heading);
-		Typeface headingFace = Typeface.createFromAsset(getAssets(),
-	            "fonts/KaushanScript-Regular.otf");
-		heading.setTypeface(headingFace);
-		heading.setText("COLOR MEMORY");
-		heading.setGravity(Gravity.CENTER);
-		heading.setTextSize(40f);
+		SetTextFeatures.setFeatures(heading, typeFace, "COLOR MEMORY", 40f);
 		
 		
-		Typeface startFace = Typeface.createFromAsset(getAssets(),
-	            "fonts/KaushanScript-Regular.otf");
 		Button startGame = (Button) findViewById(R.id.gamestarter);
-		startGame.setText("START");
-		startGame.setGravity(Gravity.CENTER);
-		
-		startGame.setTypeface(startFace);
-	
+		SetTextFeatures.setFeatures(startGame, typeFace, "START");
 		startGame.setOnClickListener(new Onclick());
+		
 		Button settingsGame = (Button) findViewById(R.id.gamesettings);
-		settingsGame.setText("SETTINGS");
-		settingsGame.setGravity(Gravity.CENTER);
-		settingsGame.setTypeface(startFace);
+		SetTextFeatures.setFeatures(settingsGame, typeFace, "SETTINGS");
+		
 		
 		Button exitGame = (Button) findViewById(R.id.gameExit);
-		exitGame.setText("EXIT");
-		exitGame.setGravity(Gravity.CENTER);
-		exitGame.setTypeface(startFace);
+		SetTextFeatures.setFeatures(exitGame, typeFace, "EXIT");
 		exitGame.setOnClickListener(new Onclick());
 	}
 

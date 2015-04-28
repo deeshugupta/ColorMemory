@@ -4,7 +4,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="circle">55dp</dimen>
-    <dimen name="maincircle">80dp</dimen>
+    <dimen name="maincircle">100dp</dimen>
     <dimen name="circleMargin">4dp</dimen>
     <dimen name="aboveLayout">90dp</dimen>
 

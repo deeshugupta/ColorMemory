@@ -6,27 +6,21 @@
     android:orientation="vertical"
 >    
 	<LinearLayout
+	    android:id="@+id/timerView"
         android:layout_width="fill_parent"
-        android:layout_height="60dp"
-        android:gravity="center_horizontal"
+        android:layout_height="110dp"
+        android:gravity="center"
         android:orientation="vertical" >
+
+		<TextView
+		    android:id="@+id/timer"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:text="TextView" />
+
     </LinearLayout>
 
 
-    <LinearLayout
-        android:id="@+id/animLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/aboveLayout"
-        android:layout_margin="@dimen/circleMargin"
-        android:layout_marginTop="82dp"
-        android:gravity="center" >
-
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="@dimen/maincircle"
-            android:layout_height="@dimen/maincircle"
-            android:layout_margin="@dimen/circleMargin" />
-    </LinearLayout>
     
     <LinearLayout
         android:id="@+id/game"
@@ -35,5 +29,14 @@
         android:gravity="center_horizontal"
         android:orientation="vertical" >
     </LinearLayout>
+
+    <Button
+        android:id="@+id/cheat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/launch_button_selector"
+        android:layout_marginTop="25dp"
+        android:text="Button" />
 
 </LinearLayout>

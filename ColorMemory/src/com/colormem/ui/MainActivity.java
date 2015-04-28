@@ -4,6 +4,7 @@ package com.colormem.ui;
 import java.util.Random;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
@@ -11,27 +12,33 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.os.CountDownTimer;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.colormem.color.ColorHelper;
 import com.colormem.color.ColorPicker;
+import com.colormem.text.SetTextFeatures;
 
 public class MainActivity extends Activity {
 	//Sequence of color which will be represented
@@ -58,25 +65,47 @@ public class MainActivity extends Activity {
 	//Back pressed Number
 	int backPressed=0;
 	
+	//Game Font
+	Typeface dialog_butons;
+	
+	//Cheat Touch iterator
+	int cheatTouch =0;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		dialog_butons = Typeface.createFromAsset(getAssets(),
+	            "fonts/KaushanScript-Regular.otf");
 		
-		//Setting up the grid 
-		setupGrid();
+		final Button cheatButton = (Button) findViewById(R.id.cheat);
+		cheatButton.setVisibility(View.INVISIBLE);
 		
-		// Defining the Test colors
 		
-		ImageView im1 = (ImageView) findViewById(R.id.imageView1);
-		ShapeDrawable animCircle = new ShapeDrawable(new OvalShape());
-		im1.setBackground(animCircle);
-		//Length of Sequence
+		final TextView timer = (TextView) findViewById(R.id.timer);
+		timer.setVisibility(View.INVISIBLE);
+		
+		/*
+		 * Defining sequence of colors which will be shown in the grid
+		 */
+		ColorPicker colorPicker = new ColorPicker(5, 5);
+		colorSequence=colorPicker.getColor();
+		
+		/*
+		 * Length of Animation sequence. This is a naive logic and
+		 * will be changed accordingly.
+		 * The comments will be changed accordingly also.
+		 */
 		level = getIntent().getIntExtra("Level", 1);
 		maxTouch= level;
 		touchSequence=new int[maxTouch];
 		
+		/*
+		 * Picking up random Colors according to the sequence of colors defined above
+		 * The sequence then needs to be remembered by the player.
+		 */
 		for(int touch=0;touch<maxTouch;){
 			Random rand = new Random();
 			int seq = rand.nextInt(25);
@@ -87,19 +116,81 @@ public class MainActivity extends Activity {
 			touchSequence[touch] = colorSequence[seq];
 			touch++;
 		}
-		
-		//Sequence for Animation
-		animationSequence(animCircle);
-				
-	}
 	
-	private void setupGrid(){
+// ============================== Animation Dialog Starts ==============================================//		
+		/*
+		 * Following lines are the code for the Dialog Animation
+		 * The animation sequence will be shown in this dialog and two buttons
+		 * will be provided for continue and Repeat which are enabled after the animation ends.
+		 */
+		final Dialog animdialog = new Dialog(MainActivity.this);
+		animdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		View animDialogView = getLayoutInflater().inflate(R.layout.dialog_color_animation, null);
+		animdialog.setContentView(animDialogView);
+		
+		TextView dialog_heading = (TextView)animdialog.findViewById(R.id.dialog_heading);
+		SetTextFeatures.setFeatures(dialog_heading, dialog_butons, "SEQUENCE", 40f);
+		
+		
+		final Button continueButton = (Button)animDialogView.findViewById(R.id.dialog_continue);
+		SetTextFeatures.setFeatures(continueButton, dialog_butons, "CONTINUE");
+		
+		
+		final Button repeatButton = (Button) animDialogView.findViewById(R.id.dialog_repeat);
+		SetTextFeatures.setFeatures(repeatButton, dialog_butons, "REPEAT");
+		
+		final TextView sequenceNumber = (TextView)animDialogView.findViewById(R.id.sequenceNumber);
+		sequenceNumber.setVisibility(View.GONE);
+		
+		ImageView animatorCircle = (ImageView) animDialogView.findViewById(R.id.animatorCircle);
+		
+		final ShapeDrawable animcircle = new ShapeDrawable(new OvalShape());
+		animatorCircle.setBackground(animcircle);
+		animationSequence(animcircle, continueButton, repeatButton);
+		
+		continueButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				animdialog.dismiss();
+				//Setting up the grid 
+				setupGrid(cheatButton,timer);
+			}
+		});
+		
+		repeatButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				animationSequence(animcircle, continueButton, repeatButton);
+			}
+		});
+		
+		animdialog.setOnKeyListener(new Dialog.OnKeyListener() {
+
+            @Override
+            public boolean onKey(DialogInterface arg0, int keyCode,
+                    KeyEvent event) {
+                // TODO Auto-generated method stub
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                	animdialog.dismiss();
+                    Intent intent = new Intent(getApplicationContext(), Launch.class);
+        			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        			intent.putExtra("EXIT", true);
+        			startActivity(intent);
+                }
+                return true;
+            }
+        });
+		
+		animdialog.show();
+		
+// ============================== Animation Dialog Ends ==============================================//			
+	}
+
+// =============================== Function for Setting up the GRID of colors ========================//
+	private void setupGrid(Button cheatButton, final TextView timer){
 		LinearLayout gameLayout  = (LinearLayout) findViewById(R.id.game);
-		
-		//Defining sequence of colors
-		ColorPicker colorPicker = new ColorPicker(5, 5);
-		colorSequence=colorPicker.getColor();
-		
 		
 		//Defining rows
 		for(int row=0;row<5;row++)
@@ -108,42 +199,51 @@ public class MainActivity extends Activity {
 			setView((TableRow)child1,row);
 			gameLayout.addView(child1);
 			}
+		cheatButton.setVisibility(View.VISIBLE);
+		cheatButton.setOnClickListener(new OnClickListner());
+		timer.setVisibility(View.VISIBLE);
+		SetTextFeatures.setFeatures(timer, dialog_butons, "", 40f);
+		SetTextFeatures.setFeatures(cheatButton, dialog_butons, "CHEATS : ");
+		new CountDownTimer(31000,1000) {
+			
+			@Override
+			public void onTick(long millisUntilFinished) {
+				timer.setText(Long.toString(millisUntilFinished/1000));
+				
+			}
+			
+			@Override
+			public void onFinish() {
+				// TODO Auto-generated method stub
+				
+			}
+		}.start();
 	}
+// =============================== Function for Setting up the GRID of colors Ends=====================//
 
+// =============================== Helper Functions to set Row of circles =============================//
 	private void setView(TableRow child1, int row) {
 		
 		ImageView imageView = (ImageView) child1.findViewById(R.id.Circle1);
-		setColor(imageView, row*5);
+		ColorHelper.setColor(imageView, colorSequence[row*5], getResources(), new OntouchListen());
 			
 		imageView = (ImageView) child1.findViewById(R.id.Circle2);
-		setColor(imageView, row*5+1);
+		ColorHelper.setColor(imageView, colorSequence[row*5+1], getResources(), new OntouchListen());
 				
 		imageView = (ImageView) child1.findViewById(R.id.Circle3);
-		setColor(imageView, row*5+2);
+		ColorHelper.setColor(imageView, colorSequence[row*5+2], getResources(), new OntouchListen());
 				
 		imageView = (ImageView) child1.findViewById(R.id.Circle4);
-		setColor(imageView, row*5+3);
+		ColorHelper.setColor(imageView, colorSequence[row*5+3], getResources(), new OntouchListen());
 				
 		imageView = (ImageView) child1.findViewById(R.id.Circle5);
-		setColor(imageView, row*5+4);
+		ColorHelper.setColor(imageView, colorSequence[row*5+4], getResources(), new OntouchListen());
 		
 		
 	}
-
-	public void setColor(ImageView imageView,int seq){
-		
-		ShapeDrawable shapeDrawable = new ShapeDrawable(new OvalShape());
-		shapeDrawable.getPaint().setColor(colorSequence[seq]);
-		shapeDrawable.setIntrinsicHeight(imageView.getLayoutParams().height);
-		shapeDrawable.setIntrinsicWidth(imageView.getLayoutParams().width);
-		Bitmap bMap = drawableToBitmap(shapeDrawable);
-		BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bMap);
-		imageView.setBackground(bitmapDrawable);
-		imageView.setOnTouchListener(new OntouchListen());
-	}
+// =============================== Helper Functions to set Row of circles  Ends=========================//
 	
-	
-	
+// =============================== Touch Listener of  circles   =========================================//	
 	private class OntouchListen implements OnTouchListener{	
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
@@ -182,21 +282,10 @@ public class MainActivity extends Activity {
 	        return false;
 	}
 	}
-	
-	public static Bitmap drawableToBitmap (Drawable drawable) {
-	    if (drawable instanceof BitmapDrawable) {
-	        return ((BitmapDrawable)drawable).getBitmap();
-	    }
+// =============================== Touch Listener of  circles  Ends =====================================//	
 
-	    Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Config.ARGB_8888);
-	    Canvas canvas = new Canvas(bitmap); 
-	    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-	    drawable.draw(canvas);
-
-	    return bitmap;
-	}
-	
-	private void animationSequence(ShapeDrawable circle){
+// =============================== Animation function ===================================================//
+	private void animationSequence(ShapeDrawable circle, final Button continueButton, final Button repeatButton){
 		
 		final ShapeDrawable animCircle = circle;
 		Animator[] items = new Animator[maxTouch];
@@ -205,7 +294,7 @@ public class MainActivity extends Activity {
 						
 			ObjectAnimator objAnimator = ObjectAnimator.
 					ofObject(animCircle, "Color", new ArgbEvaluator(),touchSequence[touch],Color.TRANSPARENT);
-			objAnimator.setDuration(2000);
+			objAnimator.setDuration(2500);
 			objAnimator.setInterpolator(new TimeInterpolator() {
 				
 				@Override
@@ -228,9 +317,38 @@ public class MainActivity extends Activity {
 			
 		}
 		AnimatorSet animSet = new AnimatorSet();
+		animSet.addListener(new AnimatorListener() {
+			
+			@Override
+			public void onAnimationStart(Animator animation) {
+				continueButton.setEnabled(false);
+				repeatButton.setEnabled(false);
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animator animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				continueButton.setEnabled(true);
+				repeatButton.setEnabled(true);
+				
+			}
+			
+			@Override
+			public void onAnimationCancel(Animator animation) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		animSet.playSequentially(items);
 		animSet.start();
 	}
+// =============================== Animation function Ends ==============================================//
+
 	@Override
 	public void onBackPressed(){
 		if(backPressed!=1){
@@ -243,5 +361,78 @@ public class MainActivity extends Activity {
 			intent.putExtra("EXIT", true);
 			startActivity(intent);
 		}
+	}
+	
+//================================ Cheat Button CLick Listener ==========================================//
+	private class OnClickListner implements OnClickListener{
+
+		@Override
+		public void onClick(View v) {
+			if(v.getId()==R.id.cheat){
+				final Dialog animdialog = new Dialog(MainActivity.this);
+				animdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+				View animDialogView = getLayoutInflater().inflate(R.layout.dialog_color_animation, null);
+				animdialog.setContentView(animDialogView);
+				
+				TextView dialog_heading = (TextView)animdialog.findViewById(R.id.dialog_heading);
+				SetTextFeatures.setFeatures(dialog_heading, dialog_butons, "SEQUENCE", 40f);
+				
+				final TextView sequenceNumber = (TextView)animDialogView.findViewById(R.id.sequenceNumber);
+				SetTextFeatures.setFeatures(sequenceNumber, dialog_butons, "", 20f);
+				
+				
+				final Button continueButton = (Button)animDialogView.findViewById(R.id.dialog_continue);
+				SetTextFeatures.setFeatures(continueButton, dialog_butons, "OK");
+				
+				
+				final Button repeatButton = (Button) animDialogView.findViewById(R.id.dialog_repeat);
+				SetTextFeatures.setFeatures(repeatButton, dialog_butons, "NEXT");
+				
+				
+				ImageView animatorCircle = (ImageView) animDialogView.findViewById(R.id.animatorCircle);
+				
+				cheatTouch=0;
+				if(cheatTouch==maxTouch-1){
+					repeatButton.setText("REPEAT");
+				}
+				final ShapeDrawable animcircle = new ShapeDrawable(new OvalShape());
+				animcircle.getPaint().setColor(touchSequence[cheatTouch]);
+				animatorCircle.setBackground(animcircle);
+				sequenceNumber.setText(cheatTouch+1+"/"+maxTouch);
+				
+				continueButton.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						animdialog.dismiss();
+					}
+				});
+				
+				repeatButton.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						animcircle.invalidateSelf();
+						
+						if(cheatTouch<maxTouch-1)
+						{
+							repeatButton.setText("NEXT");
+							cheatTouch++;
+							sequenceNumber.setText(cheatTouch+1+"/"+maxTouch);
+							animcircle.getPaint().setColor(touchSequence[cheatTouch]);
+						}
+						if(cheatTouch == maxTouch-1){
+							repeatButton.setText("REPEAT");
+							cheatTouch=-1;
+						}
+					}
+				});
+				
+				
+				animdialog.show();
+			}
+			
+		}
+		
 	}
 }

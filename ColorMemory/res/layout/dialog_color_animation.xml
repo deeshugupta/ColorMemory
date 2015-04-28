@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="15dp" 
+    android:gravity="center_horizontal"
+   >
+
+    <TextView
+        android:id="@+id/dialog_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="33dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/sequenceNumber"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="33dp"
+        android:text="TextView" />
+
+    <ImageView
+        android:id="@+id/animatorCircle"
+        android:layout_width="@dimen/maincircle"
+        android:layout_height="@dimen/maincircle"
+        android:layout_marginTop="57dp"
+        android:background="@drawable/circle" />
+
+    
+
+    <Button
+        android:id="@+id/dialog_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        
+        android:layout_marginTop="33dp"
+        android:background="@drawable/launch_button_selector"
+        android:text="Continue" />
+    <Button
+        android:id="@+id/dialog_repeat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/launch_button_selector"
+        android:text="Repeat" />
+   
+
+</LinearLayout>

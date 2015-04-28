@@ -1,5 +1,7 @@
 package com.colormem.ui;
 
+import com.colormem.text.SetTextFeatures;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -39,9 +41,8 @@ public class LevelResult extends Activity {
 		
 		Button continueButton = (Button) findViewById(R.id.Continue);
 		TextView result = (TextView) findViewById(R.id.Result);
-		result.setTypeface(startFace);
-		result.setTextSize(40f);
-		continueButton.setTypeface(startFace);
+		SetTextFeatures.setFeatures(result, startFace, "", 40f);
+		
 		Intent intent = getIntent();
 		final int level = intent.getExtras().getInt("level");
 		String Result = intent.getExtras().getString("Result");
@@ -49,8 +50,8 @@ public class LevelResult extends Activity {
 		if("Failed".equals(Result)){
 			result.setText("Level "+level+" - Failed");
 			result.setTextColor(Color.parseColor("#CC0000"));
-			continueButton.setText("START AGAIN");
-			continueButton.setGravity(Gravity.CENTER);
+			SetTextFeatures.setFeatures(continueButton, startFace, "START AGAIN");
+			
 			continueButton.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -80,8 +81,8 @@ public class LevelResult extends Activity {
 		else{
 			result.setText("Level "+level+" - Passed");
 			result.setTextColor(Color.parseColor("#006B24"));
-			continueButton.setText("CONTINUE");
-			continueButton.setGravity(Gravity.CENTER);
+			SetTextFeatures.setFeatures(continueButton, startFace, "CONTINUE");
+			
 			continueButton.setOnClickListener(new OnClickListener() {
 				
 				@Override
