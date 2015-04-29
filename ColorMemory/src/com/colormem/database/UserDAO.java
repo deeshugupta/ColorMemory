@@ -143,4 +143,21 @@ public class UserDAO {
 		User user = new User(cursor.getLong(0), cursor.getString(1), cursor.getLong(2), cursor.getLong(3));
 		return user;
 	}
+
+	public boolean editUserName(String username, String newUsername) {
+		
+		Cursor search =  sqLiteDatabase.query(ColorDatabaseHelper.TABLE_USER, columns
+				, ColorDatabaseHelper.COLUMN_NAME+"=?", new String[]{newUsername.trim()}, null, null, null);
+		
+		if(search.getCount()==0)
+		{
+			ContentValues values = new ContentValues();
+			values.put(ColorDatabaseHelper.COLUMN_NAME, newUsername);
+			sqLiteDatabase.update(ColorDatabaseHelper.TABLE_USER, 
+			values, ColorDatabaseHelper.COLUMN_NAME+"=?", new String[]{username.trim()});
+			return true;
+		}
+		
+		return false;
+	}
 }

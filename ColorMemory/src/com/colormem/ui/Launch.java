@@ -174,7 +174,7 @@ public class Launch extends Activity {
 					
 					@Override
 					public void onClick(View v) {
-						
+						userDialog.dismiss();
 						if(radioCheckNewUser.isChecked()){
 							userNameSelected = newUsername.getText().toString();
 							if(userNameSelected.length()>8)
@@ -185,7 +185,7 @@ public class Launch extends Activity {
 						}
 						else if(radioCheckUserList.isChecked()){
 							activeuser = userDAO.createorgetUser(userNameSelected);
-							userDialog.dismiss();
+							
 						}
 						userDAO.close();
 						Intent intent = new Intent(Launch.this,MainActivity.class);
@@ -231,7 +231,8 @@ public class Launch extends Activity {
 				statsRow.setOnLongClickListener(new OnLongPress(itemUsername.getText().toString(),
 						statsLayout,statsRow));
 				
-				statsRow.setOnClickListener(new OnStatsClick());
+				statsRow.setOnClickListener(new OnStatsClick(itemUsername.getText().toString(),
+						statsLayout,statsRow));
 				statsLayout.addView(statsRow);
 				}
 				
@@ -315,6 +316,17 @@ public class Launch extends Activity {
 
 	private class OnStatsClick implements OnClickListener{
 
+		private String username;
+		TableLayout statsLayout;
+		TableRow statsRow;
+		String newUsername;
+		public OnStatsClick(String username, TableLayout statsLayout,
+				TableRow statsRow) {
+			this.username =username;
+			this.statsLayout=statsLayout;
+			this.statsRow=statsRow;
+		}
+
 		@Override
 		public void onClick(View v) {
 			final Dialog changeUsername = new Dialog(Launch.this);
@@ -340,6 +352,36 @@ public class Launch extends Activity {
 			SetTextFeatures.setFeatures(okchange, typeFace, "OK");
 			Button cancelChange  = (Button) changeView.findViewById(R.id.Cancel);
 			SetTextFeatures.setFeatures(cancelChange, typeFace, "CANCEL");
+			
+			cancelChange.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+
+					changeUsername.dismiss();
+				}
+			});
+			
+			okchange.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					newUsername = changeusernameEditText.getText().toString();
+					if(newUsername.length()>8)
+						newUsername = newUsername.substring(0, 8);
+					if(newUsername.length()==0)
+						newUsername = "John Doe";
+					
+					boolean changed = userDAO.editUserName(username, newUsername.toUpperCase());
+					if(changed){
+					TextView item_username = (TextView) statsRow.findViewById(R.id.item_username);
+					SetTextFeatures.setFeatures(item_username, typeFace, newUsername.toUpperCase(), 18f);
+					}
+					changeUsername.dismiss();
+					
+				}
+			});
+			
 			
 			changeUsername.show();
 			
