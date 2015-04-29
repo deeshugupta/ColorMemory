@@ -79,6 +79,15 @@ public class MainActivity extends Activity {
 	//Cheats remaining
 	Long cheats=0l;	
 	
+	//Remaining Time
+	Long remainingTime=0l;
+	
+	//Total Time
+	Long totalTime=0l;
+	
+	//Countdown Timer
+	CountDownTimer cdt;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +108,11 @@ public class MainActivity extends Activity {
 		
 		final TextView username = (TextView) findViewById(R.id.main_user);
 		username.setVisibility(View.INVISIBLE);
-		SetTextFeatures.setFeatures(username, dialog_butons, "USER : "+userName, 15f);
+		SetTextFeatures.setFeatures(username, dialog_butons, "USER - "+userName+ " : LEVEL - "+level, 15f);
 		
 		final TextView timer = (TextView) findViewById(R.id.timer);
 		timer.setVisibility(View.INVISIBLE);
+		
 		
 		/*
 		 * Defining sequence of colors which will be shown in the grid
@@ -116,7 +126,8 @@ public class MainActivity extends Activity {
 		 * The comments will be changed accordingly also.
 		 */
 		
-		maxTouch= level.intValue();
+		maxTouch = ((level.intValue()-1)/6)+2;
+		totalTime = 31 - ((level-1)%6)*2+((maxTouch-2)/4)*7; 
 		touchSequence=new int[maxTouch];
 		
 		/*
@@ -222,20 +233,31 @@ public class MainActivity extends Activity {
 		timer.setVisibility(View.VISIBLE);
 		SetTextFeatures.setFeatures(timer, dialog_butons, "", 40f);
 		SetTextFeatures.setFeatures(cheatButton, dialog_butons, "CHEATS : "+cheats.toString());
-		new CountDownTimer(31000,1000) {
+		cdt = new CountDownTimer(totalTime.longValue()*1000,1000) {
 			
 			@Override
 			public void onTick(long millisUntilFinished) {
+				remainingTime = millisUntilFinished/1000;
 				timer.setText(Long.toString(millisUntilFinished/1000));
 				
 			}
 			
 			@Override
 			public void onFinish() {
-				// TODO Auto-generated method stub
+				if(maxTouch!=touched){
+//					Toast.makeText(MainActivity.this, "Time Elapsed", Toast.LENGTH_SHORT).show();
+					Intent intent = new Intent(MainActivity.this,LevelResult.class);
+		        	intent.putExtra("Result", "Time Elapsed");
+		        	intent.putExtra("UserName", userName);
+					intent.putExtra("Level", level);
+					intent.putExtra("Cheats", cheats);
+		        	intent.putExtra("TotalTime", totalTime);
+		        	startActivity(intent);
+				}
 				
 			}
 		}.start();
+		
 	}
 // =============================== Function for Setting up the GRID of colors Ends=====================//
 
@@ -283,22 +305,27 @@ public class MainActivity extends Activity {
 	        	touched++;
 	        }
 	        else if(touched<maxTouch && touchSequence[touched]!=color){
-	        	Toast.makeText(MainActivity.this, "Wrong Sequence", Toast.LENGTH_SHORT).show();
+//	        	Toast.makeText(MainActivity.this, "Wrong Sequence", Toast.LENGTH_SHORT).show();
+	        	cdt.cancel();
 	        	intent.putExtra("Result", "Failed");
 	        	intent.putExtra("UserName", userName);
 				intent.putExtra("Level", level);
 				intent.putExtra("Cheats", cheats);
 	        	intent.putExtra("CorrectColor", touchSequence[touched]);
 	        	intent.putExtra("WrongColor", color);
+	        	intent.putExtra("TotalTime", totalTime);
 	        	startActivity(intent);
 	        }
 	        
 	        if(touched == maxTouch){
-	        	Toast.makeText(MainActivity.this, "Correctly done", Toast.LENGTH_SHORT).show();
+//	        	Toast.makeText(MainActivity.this, "Correctly done", Toast.LENGTH_SHORT).show();
+	        	cdt.cancel();
 	        	intent.putExtra("Result", "Passed");
 	        	intent.putExtra("UserName", userName);
 				intent.putExtra("Level", level);
 				intent.putExtra("Cheats", cheats);
+				intent.putExtra("TotalTime", totalTime);
+				intent.putExtra("RemaingTime", remainingTime);
 	        	startActivity(intent);
 	        }
 	        return false;

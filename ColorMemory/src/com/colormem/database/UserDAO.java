@@ -102,7 +102,7 @@ public class UserDAO {
 		return null;
 	}
 	
-	public List<String> getAllUsers(){
+	public List<String> getAllUserNames(){
 		List<String> users = new ArrayList<String>();
 		Cursor cursor = sqLiteDatabase.query(ColorDatabaseHelper.TABLE_USER, 
 				new String[]{ColorDatabaseHelper.COLUMN_NAME},
@@ -116,6 +116,27 @@ public class UserDAO {
 		}
 		}
 		return users;
+	}
+	
+	public List<User> getAllUsers(){
+		List<User> users = new ArrayList<User>();
+		Cursor cursor = sqLiteDatabase.query(ColorDatabaseHelper.TABLE_USER, 
+				columns,
+				null, null, null, null, null);
+		if(cursor.getCount()!=0)
+		{
+			cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			users.add(cursorToUser(cursor));
+			cursor.moveToNext();
+		}
+		}
+		return users;
+	}
+	
+	public void deleteUser(String name){
+		sqLiteDatabase.delete(ColorDatabaseHelper.TABLE_USER, ColorDatabaseHelper.COLUMN_NAME+"=?",
+				new String[]{name.trim()});
 	}
 
 	private User cursorToUser(Cursor cursor) {

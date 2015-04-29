@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+    
+<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+     <TableLayout
+         android:id="@+id/statsTable"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:padding="15dp"
+         >
+
+         <TableRow
+             android:id="@+id/mainRow"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content" >
+             <TextView
+		        android:id="@+id/main_username"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:text="Username"
+		        android:layout_weight="1" />
+             <TextView
+		        android:id="@+id/main_level"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:text="Level"
+		        android:layout_marginLeft="10dp"
+		        android:layout_weight="1" />
+
+    		<TextView
+		        android:id="@+id/main_cheats"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="10dp"
+		        android:text="Cheats" 
+		        android:layout_weight="1"/>
+        </TableRow>
+
+         
+     </TableLayout>
+     </ScrollView>
+
+
+</LinearLayout>

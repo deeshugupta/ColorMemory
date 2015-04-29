@@ -1,26 +1,22 @@
 package com.colormem.ui;
 
-import com.colormem.database.UserDAO;
-import com.colormem.text.SetTextFeatures;
-
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.colormem.database.UserDAO;
+import com.colormem.text.SetTextFeatures;
 
 public class LevelResult extends Activity {
 
@@ -33,11 +29,16 @@ public class LevelResult extends Activity {
 	
 	//Database 
 	UserDAO userDAO;
+	
+	//Time values
+	Long totalTime;
+	Long remainingTime;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_level_result);
+		
 		
 		//Getting Intents
 		Intent intent = getIntent();
@@ -45,12 +46,19 @@ public class LevelResult extends Activity {
 		userName = intent.getExtras().getString("UserName");
 		level = intent.getLongExtra("Level", 0l);
 		cheats = intent.getLongExtra("Cheats", 0l);
+		totalTime = intent.getLongExtra("TotalTime", 30l);
+		remainingTime = intent.getLongExtra("RemaingTime", 0l);
 		
 		//Saving values to Database
 		userDAO = new UserDAO(LevelResult.this);
 		userDAO.open();
 		
 		//Update values for user
+		if(remainingTime>=totalTime*0.6)
+			{
+			cheats++;
+			Toast.makeText(LevelResult.this, "Cheats Increased", Toast.LENGTH_SHORT).show();
+			}
 		userDAO.updateCheats(userName, cheats);
 		
 		
@@ -106,7 +114,7 @@ public class LevelResult extends Activity {
 			wrong.setTextColor(getTextColor(wrongColor));
 			
 		}
-		else{
+		else if("Passed".equalsIgnoreCase(Result)){
 			userDAO.updateLevel(userName, level);
 			result.setText("Level "+level+" - Passed");
 			result.setTextColor(Color.parseColor("#006B24"));
@@ -125,6 +133,24 @@ public class LevelResult extends Activity {
 					
 				}
 			});
+		}
+		else if("Time Elapsed".equalsIgnoreCase(Result)){
+			result.setText("Level "+level+" - Failed");
+			result.setTextColor(Color.parseColor("#CC0000"));
+			SetTextFeatures.setFeatures(continueButton, startFace, "START AGAIN");
+			
+			continueButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					userDAO.close();
+					startActivity(new Intent(LevelResult.this, Launch.class));
+					
+				}
+			});
+			
+			correct.setVisibility(View.GONE);
+			SetTextFeatures.setFeatures(wrong, startFace, "TIME ELAPSED", 20f);
 		}
 	}
 
