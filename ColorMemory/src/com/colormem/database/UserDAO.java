@@ -43,10 +43,10 @@ public class UserDAO {
 			if(activeUser !=null && !existingUser.getName().equalsIgnoreCase(activeUser.getName()))
 			{
 				updateActiveUser(activeUser.getName(), 0);
-				updateActiveUser(existingUser.getName(),1);
-			}
 				
+			}
 			
+			updateActiveUser(existingUser.getName(),1);
 			search.close();
 			return existingUser;
 		}

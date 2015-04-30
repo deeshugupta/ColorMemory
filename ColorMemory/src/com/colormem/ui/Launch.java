@@ -84,6 +84,7 @@ public class Launch extends Activity {
 				userDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				View userDialogView = getLayoutInflater().inflate(R.layout.dialog_user, null);
 				userDialog.setContentView(userDialogView);
+				activeuser = userDAO.getActiveUser();
 				
 				final RadioButton radioCheckActiveUser = (RadioButton) userDialogView.
 						findViewById(R.id.radioCheck1);
@@ -95,6 +96,7 @@ public class Launch extends Activity {
 						findViewById(R.id.radioCheck2);
 				SetTextFeatures.setFeatures(radioCheckNewUser, typeFace, "PLAY AS : ", 25f);
 				radioCheckNewUser.setChecked(false);
+				
 				final EditText newUsername = (EditText) userDialogView.findViewById(R.id.newusername);
 				newUsername.setFocusableInTouchMode(true);
 				newUsername.setBackground(null);
@@ -149,6 +151,7 @@ public class Launch extends Activity {
 					@Override
 					public void onClick(View v) {
 						newUsername.setText("");
+						radioCheckNewUser.performClick();
 					}
 				});
 				
@@ -158,6 +161,12 @@ public class Launch extends Activity {
 					radioCheckUserList.setVisibility(View.GONE);
 					userList.setVisibility(View.GONE);
 					radioCheckNewUser.setChecked(true);
+				}
+				else if(usernames.size()==1){
+					radioCheckUserList.setVisibility(View.GONE);
+					userList.setVisibility(View.GONE);
+					activeuser = userDAO.createorgetUser(usernames.get(0));
+					SetTextFeatures.setFeatures(activeUsername, typeFace, activeuser.getName(), 25f);
 				}
 				else if(activeuser==null){
 					radioCheckActiveUser.setVisibility(View.GONE);

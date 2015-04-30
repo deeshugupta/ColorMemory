@@ -38,6 +38,7 @@ import android.widget.Toast;
 
 import com.colormem.color.ColorHelper;
 import com.colormem.color.ColorPicker;
+import com.colormem.sound.ClickSound;
 import com.colormem.text.SetTextFeatures;
 
 public class MainActivity extends Activity {
@@ -88,6 +89,9 @@ public class MainActivity extends Activity {
 	//Countdown Timer
 	CountDownTimer cdt;
 	
+	//Faults Allowed
+	int faults=0;
+	int maxfaults=0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -103,15 +107,38 @@ public class MainActivity extends Activity {
 		dialog_butons = Typeface.createFromAsset(getAssets(),
 	            "fonts/KaushanScript-Regular.otf");
 		
+		/*
+		 * Length of Animation sequence. This is a naive logic and
+		 * will be changed accordingly.
+		 * The comments will be changed accordingly also.
+		 */
+		
+		maxTouch = ((level.intValue()-1)/4)+2;
+		totalTime = 31 - ((level-1)%4)*3+((maxTouch-2)/4)*10; 
+		touchSequence=new int[maxTouch];
+		if(maxTouch%2==0)
+			maxfaults=(maxTouch-2)/2;
+		else if((maxTouch-1)%2==0)
+			maxfaults=(maxTouch-3)/2;
+		faults=maxfaults;
+		
 		final Button cheatButton = (Button) findViewById(R.id.cheat);
 		cheatButton.setVisibility(View.INVISIBLE);
 		
 		final TextView username = (TextView) findViewById(R.id.main_user);
 		username.setVisibility(View.INVISIBLE);
-		SetTextFeatures.setFeatures(username, dialog_butons, "USER - "+userName+ " : LEVEL - "+level, 15f);
+		SetTextFeatures.setFeatures(username, dialog_butons, "USER - "+userName, 15f);
 		
 		final TextView timer = (TextView) findViewById(R.id.timer);
 		timer.setVisibility(View.INVISIBLE);
+		
+		final TextView levelIndicator = (TextView) findViewById(R.id.Level);
+		SetTextFeatures.setFeatures(levelIndicator, dialog_butons, "LEVEL - "+level, 20f);
+		levelIndicator.setVisibility(View.INVISIBLE);
+		
+		final TextView faultIndicatior = (TextView) findViewById(R.id.Fault);
+		SetTextFeatures.setFeatures(faultIndicatior, dialog_butons, "FAULTS : "+maxfaults, 20f);
+		faultIndicatior.setVisibility(View.INVISIBLE);
 		
 		
 		/*
@@ -120,15 +147,6 @@ public class MainActivity extends Activity {
 		ColorPicker colorPicker = new ColorPicker(5, 5);
 		colorSequence=colorPicker.getColor();
 		
-		/*
-		 * Length of Animation sequence. This is a naive logic and
-		 * will be changed accordingly.
-		 * The comments will be changed accordingly also.
-		 */
-		
-		maxTouch = ((level.intValue()-1)/6)+2;
-		totalTime = 31 - ((level-1)%6)*2+((maxTouch-2)/4)*7; 
-		touchSequence=new int[maxTouch];
 		
 		/*
 		 * Picking up random Colors according to the sequence of colors defined above
@@ -182,7 +200,7 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				animdialog.dismiss();
 				//Setting up the grid 
-				setupGrid(cheatButton,timer,username);
+				setupGrid(cheatButton,timer,username,levelIndicator, faultIndicatior);
 			}
 		});
 		
@@ -217,19 +235,24 @@ public class MainActivity extends Activity {
 	}
 
 // =============================== Function for Setting up the GRID of colors ========================//
-	private void setupGrid(Button cheatButton, final TextView timer, TextView username){
+	private void setupGrid(Button cheatButton, final TextView timer, TextView username,
+			TextView levelIndicator, TextView faultIndicatior){
 		LinearLayout gameLayout  = (LinearLayout) findViewById(R.id.game);
 		
 		//Defining rows
 		for(int row=0;row<5;row++)
 			{
 			View child1 = getLayoutInflater().inflate(R.layout.circle_row, null);
-			setView((TableRow)child1,row);
+			setView((TableRow)child1,row,faultIndicatior);
 			gameLayout.addView(child1);
 			}
+		levelIndicator.setVisibility(View.VISIBLE);
+		faultIndicatior.setVisibility(View.VISIBLE);
 		username.setVisibility(View.VISIBLE);
 		cheatButton.setVisibility(View.VISIBLE);
 		cheatButton.setOnClickListener(new OnClickListner(cheatButton));
+		if(cheats <= 0)
+			cheatButton.setEnabled(false);
 		timer.setVisibility(View.VISIBLE);
 		SetTextFeatures.setFeatures(timer, dialog_butons, "", 40f);
 		SetTextFeatures.setFeatures(cheatButton, dialog_butons, "CHEATS : "+cheats.toString());
@@ -262,22 +285,22 @@ public class MainActivity extends Activity {
 // =============================== Function for Setting up the GRID of colors Ends=====================//
 
 // =============================== Helper Functions to set Row of circles =============================//
-	private void setView(TableRow child1, int row) {
+	private void setView(TableRow child1, int row, TextView faultIndicatior) {
 		
 		ImageView imageView = (ImageView) child1.findViewById(R.id.Circle1);
-		ColorHelper.setColor(imageView, colorSequence[row*5], getResources(), new OntouchListen());
+		ColorHelper.setColor(imageView, colorSequence[row*5], getResources(), new OntouchListen(faultIndicatior));
 			
 		imageView = (ImageView) child1.findViewById(R.id.Circle2);
-		ColorHelper.setColor(imageView, colorSequence[row*5+1], getResources(), new OntouchListen());
+		ColorHelper.setColor(imageView, colorSequence[row*5+1], getResources(), new OntouchListen(faultIndicatior));
 				
 		imageView = (ImageView) child1.findViewById(R.id.Circle3);
-		ColorHelper.setColor(imageView, colorSequence[row*5+2], getResources(), new OntouchListen());
+		ColorHelper.setColor(imageView, colorSequence[row*5+2], getResources(), new OntouchListen(faultIndicatior));
 				
 		imageView = (ImageView) child1.findViewById(R.id.Circle4);
-		ColorHelper.setColor(imageView, colorSequence[row*5+3], getResources(), new OntouchListen());
+		ColorHelper.setColor(imageView, colorSequence[row*5+3], getResources(), new OntouchListen(faultIndicatior));
 				
 		imageView = (ImageView) child1.findViewById(R.id.Circle5);
-		ColorHelper.setColor(imageView, colorSequence[row*5+4], getResources(), new OntouchListen());
+		ColorHelper.setColor(imageView, colorSequence[row*5+4], getResources(), new OntouchListen(faultIndicatior));
 		
 		
 	}
@@ -285,9 +308,15 @@ public class MainActivity extends Activity {
 	
 // =============================== Touch Listener of  circles   =========================================//	
 	private class OntouchListen implements OnTouchListener{	
+		TextView faultIndicator;
+	public OntouchListen(TextView faultIndicatior) {
+		this.faultIndicator = faultIndicatior;
+	}
+
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 			v.performClick();
+			ClickSound.clickSound(getAssets());
 			backPressed=0;
 			ImageView imageView = (ImageView) v;
 			bitmap = ((BitmapDrawable)imageView.getBackground()).getBitmap();
@@ -306,15 +335,24 @@ public class MainActivity extends Activity {
 	        }
 	        else if(touched<maxTouch && touchSequence[touched]!=color){
 //	        	Toast.makeText(MainActivity.this, "Wrong Sequence", Toast.LENGTH_SHORT).show();
-	        	cdt.cancel();
-	        	intent.putExtra("Result", "Failed");
-	        	intent.putExtra("UserName", userName);
-				intent.putExtra("Level", level);
-				intent.putExtra("Cheats", cheats);
-	        	intent.putExtra("CorrectColor", touchSequence[touched]);
-	        	intent.putExtra("WrongColor", color);
-	        	intent.putExtra("TotalTime", totalTime);
-	        	startActivity(intent);
+	        	if(faults==0)
+	        	{
+	        		cdt.cancel();
+		        	intent.putExtra("Result", "Failed");
+		        	intent.putExtra("UserName", userName);
+					intent.putExtra("Level", level);
+					intent.putExtra("Cheats", cheats);
+		        	intent.putExtra("CorrectColor", touchSequence[touched]);
+		        	intent.putExtra("WrongColor", color);
+		        	intent.putExtra("TotalTime", totalTime);
+		        	startActivity(intent);
+	        	}
+	        	else{
+	        		faults--;
+	        		Toast.makeText(MainActivity.this, 
+	        				"Wrong color clicked. Click the correct color.", Toast.LENGTH_SHORT).show();
+	        		faultIndicator.setText("FAULTS : "+faults);
+	        	}
 	        }
 	        
 	        if(touched == maxTouch){
@@ -405,6 +443,7 @@ public class MainActivity extends Activity {
 			backPressed++;
 		}
 		else{
+			cdt.cancel();
 			Intent intent = new Intent(getApplicationContext(), Launch.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			intent.putExtra("EXIT", true);
