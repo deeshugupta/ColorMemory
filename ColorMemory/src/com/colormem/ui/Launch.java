@@ -3,11 +3,13 @@ package com.colormem.ui;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -16,8 +18,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -34,11 +39,13 @@ public class Launch extends Activity {
 	UserDAO userDAO;
 	Typeface typeFace;
 	String userNameSelected;
+	AudioManager audioManager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launch);
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		
 		//Initialising the database and Opening it 
 		userDAO = new UserDAO(Launch.this);
@@ -59,6 +66,7 @@ public class Launch extends Activity {
 		
 		Button settingsGame = (Button) findViewById(R.id.gamesettings);
 		SetTextFeatures.setFeatures(settingsGame, typeFace, "SETTINGS");
+		settingsGame.setOnClickListener(new Onclick());
 		
 		
 		Button exitGame = (Button) findViewById(R.id.gameStats);
@@ -208,7 +216,7 @@ public class Launch extends Activity {
 				userDialog.show();
 				break;
  //==================================Start Button Click Ends=======================================//
-				
+ //==================================Stats Button starts===========================================//
 			case R.id.gameStats:
 				List<User> users = userDAO.getAllUsers();
 				Dialog statsDialog =  new Dialog(Launch.this);
@@ -247,6 +255,71 @@ public class Launch extends Activity {
 				
 				statsDialog.show();
 				break;
+				
+ //==================================Stats Button Ends=============================================//
+				
+ //==================================Settings Start================================================//
+			case R.id.gamesettings:
+				final Dialog settingsDialog = new Dialog(Launch.this);
+				settingsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+				View gameSettingsView = getLayoutInflater().inflate(R.layout.volumecontrol_setting, null);
+				settingsDialog.setContentView(gameSettingsView);
+				TextView settingsHeading = (TextView) gameSettingsView.findViewById(R.id.volumecontrol);
+				SetTextFeatures.setFeatures(settingsHeading, typeFace, "VOLUME CONTROL", 35f);
+				
+				Button volumeOKButton = (Button) gameSettingsView.findViewById(R.id.Ok_volume);
+				SetTextFeatures.setFeatures(volumeOKButton, typeFace, "OK");
+				
+				final SeekBar volumeBar = (SeekBar) gameSettingsView.findViewById(R.id.volumeseekbar);
+				final CheckBox muteBox = (CheckBox) gameSettingsView.findViewById(R.id.mute);
+				muteBox.setTypeface(typeFace);
+				muteBox.setGravity(Gravity.CENTER);
+				muteBox.setTextSize(20f);
+				audioManager =(AudioManager) getSystemService(Context.AUDIO_SERVICE);
+				volumeBar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+				volumeBar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+				
+				volumeBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+					
+					@Override
+					public void onStopTrackingTouch(SeekBar seekBar) {
+						
+					}
+					
+					@Override
+					public void onStartTrackingTouch(SeekBar seekBar) {
+						
+					}
+					
+					@Override
+					public void onProgressChanged(SeekBar seekBar, int progress,
+							boolean fromUser) {
+						muteBox.setChecked(false);
+						audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+						audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+						
+					}
+				});
+				muteBox.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						volumeBar.setProgress(0);
+						audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+						
+					}
+				});
+				
+				volumeOKButton.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+
+						settingsDialog.dismiss();
+					}
+				});
+				settingsDialog.show();
+				break;
 			}
 		}
 		
@@ -263,7 +336,6 @@ public class Launch extends Activity {
 
 		@Override
 		public void onNothingSelected(AdapterView<?> parent) {
-			// TODO Auto-generated method stub
 			
 		}
 		

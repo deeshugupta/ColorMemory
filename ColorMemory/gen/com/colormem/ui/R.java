@@ -47,15 +47,15 @@ public final class R {
         public static final int Fault=0x7f08000b;
         public static final int Level=0x7f08000d;
         public static final int Ok=0x7f08002d;
+        public static final int Ok_volume=0x7f080036;
         public static final int Result=0x7f080007;
         public static final int Wrong=0x7f080006;
-        public static final int action_settings=0x7f080035;
+        public static final int action_settings=0x7f080037;
         public static final int animatorCircle=0x7f080019;
         public static final int cancel=0x7f08002a;
         public static final int changeUserName=0x7f08002c;
         public static final int changeusername=0x7f08002b;
         public static final int cheat=0x7f08000f;
-        public static final int checkBox1=0x7f080034;
         public static final int delete=0x7f080029;
         public static final int deleteuser=0x7f080028;
         public static final int dialog_continue=0x7f08001a;
@@ -75,13 +75,13 @@ public final class R {
         public static final int main_level=0x7f08001f;
         public static final int main_user=0x7f080010;
         public static final int main_username=0x7f08001e;
+        public static final int mute=0x7f080035;
         public static final int newusername=0x7f080026;
         public static final int okbuttonuserdialog=0x7f080027;
         public static final int radioCheck1=0x7f080021;
         public static final int radioCheck2=0x7f080025;
         public static final int radioCheck3=0x7f080023;
         public static final int result_user=0x7f080009;
-        public static final int seekBar1=0x7f080033;
         public static final int sequenceNumber=0x7f080018;
         public static final int statsTable=0x7f08001c;
         public static final int tableCircle=0x7f080011;
@@ -90,6 +90,8 @@ public final class R {
         public static final int timerView=0x7f08000a;
         public static final int userList=0x7f080024;
         public static final int username=0x7f080022;
+        public static final int volumecontrol=0x7f080033;
+        public static final int volumeseekbar=0x7f080034;
     }
     public static final class layout {
         public static final int activity_launch=0x7f030000;
