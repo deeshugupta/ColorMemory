@@ -147,6 +147,15 @@ public class Launch extends Activity {
 				
 				userList.setOnItemSelectedListener(new OnItemSelected());
 				
+				userList.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+
+						radioCheckUserList.performClick();
+					}
+				});
+				
 				radioCheckActiveUser.setOnClickListener(new OnClickListener() {
 					
 					@Override
