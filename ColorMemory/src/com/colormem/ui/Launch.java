@@ -5,11 +5,15 @@ import java.util.List;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -30,6 +34,7 @@ import android.widget.TextView;
 
 import com.colormem.database.User;
 import com.colormem.database.UserDAO;
+import com.colormem.sound.ClickSound;
 import com.colormem.text.SetTextFeatures;
 import com.colormem.text.UsersAdapter;
 
@@ -40,12 +45,19 @@ public class Launch extends Activity {
 	Typeface typeFace;
 	String userNameSelected;
 	AudioManager audioManager;
+	final String SYSTEM_VOLUME ="system_volume";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launch);
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		
+		audioManager =(AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		SharedPreferences systemVolume = getSharedPreferences(SYSTEM_VOLUME, 0);
+		SharedPreferences.Editor editor = systemVolume.edit();
+		editor.putInt(AUDIO_SERVICE, audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+		editor.commit();
 		
 		//Initialising the database and Opening it 
 		userDAO = new UserDAO(Launch.this);
@@ -78,6 +90,16 @@ public class Launch extends Activity {
 	
 	@Override
 	public void onBackPressed(){
+		destroyEverything();
+		
+	}
+	
+	public void destroyEverything(){
+		SharedPreferences sharedPreferences = getSharedPreferences(SYSTEM_VOLUME, 0);
+		int systemVolume = sharedPreferences.getInt(AUDIO_SERVICE,
+				audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, systemVolume, 0);
+		ClickSound.release();
 		finish();
 	}
 	
@@ -213,13 +235,24 @@ public class Launch extends Activity {
 						
 					}
 				});
+				
+				userDialog.setOnKeyListener(new OnKeyListener() {
+					
+					@Override
+					public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+						if(keyCode == KeyEvent.KEYCODE_BACK){
+							userDialog.dismiss();
+						}
+						return false;
+					}
+				});
 				userDialog.show();
 				break;
  //==================================Start Button Click Ends=======================================//
  //==================================Stats Button starts===========================================//
 			case R.id.gameStats:
 				List<User> users = userDAO.getAllUsers();
-				Dialog statsDialog =  new Dialog(Launch.this);
+				final Dialog statsDialog =  new Dialog(Launch.this);
 				statsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				View statsView = getLayoutInflater().inflate(R.layout.dialog_stats_list,null);
 				statsDialog.setContentView(statsView);
@@ -253,6 +286,17 @@ public class Launch extends Activity {
 				statsLayout.addView(statsRow);
 				}
 				
+				statsDialog.setOnKeyListener(new OnKeyListener() {
+					
+					@Override
+					public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+						if(keyCode == KeyEvent.KEYCODE_BACK){
+							statsDialog.dismiss();
+						}
+						return false;
+					}
+				});
+				
 				statsDialog.show();
 				break;
 				
@@ -275,9 +319,12 @@ public class Launch extends Activity {
 				muteBox.setTypeface(typeFace);
 				muteBox.setGravity(Gravity.CENTER);
 				muteBox.setTextSize(20f);
-				audioManager =(AudioManager) getSystemService(Context.AUDIO_SERVICE);
+				
 				volumeBar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
 				volumeBar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+				
+				//Putting System Value in Shared Preferences
+				
 				
 				volumeBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 					
@@ -316,6 +363,17 @@ public class Launch extends Activity {
 					public void onClick(View v) {
 
 						settingsDialog.dismiss();
+					}
+				});
+				
+				settingsDialog.setOnKeyListener(new OnKeyListener() {
+					
+					@Override
+					public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+						if(keyCode == KeyEvent.KEYCODE_BACK){
+							settingsDialog.dismiss();
+						}
+						return false;
 					}
 				});
 				settingsDialog.show();

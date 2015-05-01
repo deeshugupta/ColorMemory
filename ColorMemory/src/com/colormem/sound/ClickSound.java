@@ -40,6 +40,10 @@ public class ClickSound {
 
 
 		    }
+	
+	public static void release(){
+		mp.release();
+	}
 		
 	
 

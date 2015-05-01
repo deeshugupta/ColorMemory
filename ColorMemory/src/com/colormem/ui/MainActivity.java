@@ -14,6 +14,7 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -229,6 +230,7 @@ public class MainActivity extends Activity {
             }
         });
 		
+		
 		animdialog.show();
 		
 // ============================== Animation Dialog Ends ==============================================//			
@@ -443,6 +445,7 @@ public class MainActivity extends Activity {
 			backPressed++;
 		}
 		else{
+			if(cdt!=null)
 			cdt.cancel();
 			Intent intent = new Intent(getApplicationContext(), Launch.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
