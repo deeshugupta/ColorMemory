@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -46,17 +47,19 @@ public class Launch extends Activity {
 	String userNameSelected;
 	AudioManager audioManager;
 	final String SYSTEM_VOLUME ="system_volume";
+	final int SOUND_STREAM=AudioManager.STREAM_DTMF;
+	int check=0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launch);
-		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		setVolumeControlStream(SOUND_STREAM);
 		
 		audioManager =(AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		SharedPreferences systemVolume = getSharedPreferences(SYSTEM_VOLUME, 0);
 		SharedPreferences.Editor editor = systemVolume.edit();
-		editor.putInt(AUDIO_SERVICE, audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+		editor.putInt(AUDIO_SERVICE, audioManager.getStreamVolume(SOUND_STREAM));
 		editor.commit();
 		
 		//Initialising the database and Opening it 
@@ -84,6 +87,9 @@ public class Launch extends Activity {
 		Button exitGame = (Button) findViewById(R.id.gameStats);
 		SetTextFeatures.setFeatures(exitGame, typeFace, "STATS");
 		exitGame.setOnClickListener(new Onclick());
+		
+		Button helpButton = (Button) findViewById(R.id.helpIcon);
+		helpButton.setOnClickListener(new Onclick());
 	}
 
 	
@@ -97,12 +103,12 @@ public class Launch extends Activity {
 	public void destroyEverything(){
 		SharedPreferences sharedPreferences = getSharedPreferences(SYSTEM_VOLUME, 0);
 		int systemVolume = sharedPreferences.getInt(AUDIO_SERVICE,
-				audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
-		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, systemVolume, 0);
+				audioManager.getStreamVolume(SOUND_STREAM));
+		audioManager.setStreamVolume(SOUND_STREAM, systemVolume, 0);
 		ClickSound.release();
 		finish();
 	}
-	
+  //===========================Handling Button click starts=======================================//
 	private class Onclick implements View.OnClickListener{
 
 		@Override
@@ -110,6 +116,7 @@ public class Launch extends Activity {
 			switch(v.getId()){
 			case R.id.gamestarter:
  //============================Start Button Click Handler=========================================//
+				check=0;
 				final Dialog userDialog = new Dialog(Launch.this);
 				userDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				View userDialogView = getLayoutInflater().inflate(R.layout.dialog_user, null);
@@ -145,16 +152,9 @@ public class Launch extends Activity {
 				dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 				userList.setAdapter(dataAdapter);
 				
-				userList.setOnItemSelectedListener(new OnItemSelected());
+				userList.setOnItemSelectedListener(new OnItemSelected(radioCheckUserList));
 				
-				userList.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
 
-						radioCheckUserList.performClick();
-					}
-				});
 				
 				radioCheckActiveUser.setOnClickListener(new OnClickListener() {
 					
@@ -328,9 +328,12 @@ public class Launch extends Activity {
 				muteBox.setTypeface(typeFace);
 				muteBox.setGravity(Gravity.CENTER);
 				muteBox.setTextSize(20f);
+				if(audioManager.getStreamVolume(SOUND_STREAM)==0){
+					muteBox.setChecked(true);
+				}
 				
-				volumeBar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
-				volumeBar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+				volumeBar.setMax(audioManager.getStreamMaxVolume(SOUND_STREAM));
+				volumeBar.setProgress(audioManager.getStreamVolume(SOUND_STREAM));
 				
 				//Putting System Value in Shared Preferences
 				
@@ -351,8 +354,7 @@ public class Launch extends Activity {
 					public void onProgressChanged(SeekBar seekBar, int progress,
 							boolean fromUser) {
 						muteBox.setChecked(false);
-						audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
-						audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+						audioManager.setStreamVolume(SOUND_STREAM, progress, 0);
 						
 					}
 				});
@@ -360,8 +362,15 @@ public class Launch extends Activity {
 					
 					@Override
 					public void onClick(View v) {
-						volumeBar.setProgress(0);
-						audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+						CheckBox checkBox = (CheckBox) v;
+						if(!checkBox.isChecked())
+						{
+							audioManager.setStreamVolume(SOUND_STREAM, volumeBar.getProgress(), 0);
+						}
+						else{
+							audioManager.setStreamVolume(SOUND_STREAM, 0, 0);
+						}
+						
 						
 					}
 				});
@@ -387,17 +396,31 @@ public class Launch extends Activity {
 				});
 				settingsDialog.show();
 				break;
+				
+			case R.id.helpIcon:
+				Intent intent = new Intent(Launch.this, HelpPageView.class);
+				startActivity(intent);
 			}
 		}
 		
 	}
+	//=================================Handling Buttons Ends=========================================//
 	
 	private class OnItemSelected implements OnItemSelectedListener{
+
+		RadioButton radioCheckUserList;
+		public OnItemSelected(RadioButton radioCheckUserList) {
+
+			this.radioCheckUserList=radioCheckUserList;
+		}
 
 		@Override
 		public void onItemSelected(AdapterView<?> parent, View view,
 				int position, long id) {
+			check++;
 			userNameSelected = parent.getItemAtPosition(position).toString();
+			if(check>1)
+			radioCheckUserList.performClick();
 			
 		}
 

@@ -54,7 +54,7 @@ public class LevelResult extends Activity {
 		userDAO.open();
 		
 		//Update values for user
-		if(remainingTime>=totalTime*0.6)
+		if(remainingTime>=totalTime*0.5)
 			{
 			cheats++;
 			Toast.makeText(LevelResult.this, "Cheats Increased", Toast.LENGTH_SHORT).show();

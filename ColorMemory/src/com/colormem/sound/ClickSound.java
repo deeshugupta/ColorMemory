@@ -2,39 +2,51 @@ package com.colormem.sound;
 
 import java.io.IOException;
 
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.util.Log;
+import android.media.SoundPool;
+import android.media.SoundPool.OnLoadCompleteListener;
+import android.os.Build;
+
+import com.colormem.ui.R;
 
 public class ClickSound {
 	
 	private final static MediaPlayer mp = new MediaPlayer();
+	private static boolean isMuted;
+
 
 	public ClickSound() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	public static void clickSound(AssetManager assetManager){
 		
-
 		
+			try {
 		        if(mp.isPlaying())
 		        {  
 		            mp.stop();
 		        } 
 
-		        try {
+		        
 		            mp.reset();
 		            AssetFileDescriptor afd;
 		            afd = assetManager.openFd("colorclick.mp3");
+		            mp.setAudioStreamType(AudioManager.STREAM_DTMF);
 		            mp.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
 		            mp.prepare();
 		            mp.start();
 		        } catch (IllegalStateException e) {
-		            Log.d("ClickSound", e.getMessage());
+		        	if(mp!=null)
+		        		mp.reset();
 		        } catch (IOException e) {
-		        	Log.d("ClickSound", e.getMessage());
+		        	if(mp!=null)
+		        		mp.reset();
 		        }
 
 
@@ -43,6 +55,14 @@ public class ClickSound {
 	
 	public static void release(){
 		mp.release();
+	}
+
+	public static boolean isMuted() {
+		return isMuted;
+	}
+
+	public static void setMuted(boolean isMuted) {
+		ClickSound.isMuted = isMuted;
 	}
 		
 	
