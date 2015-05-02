@@ -43,7 +43,7 @@ public class PageViewer extends Fragment {
 			setGamePlay(rootView, inflater);
 			TextView gamePlay = (TextView) rootView.findViewById(R.id.gamehelp_title);
 			SetTextFeatures.setFeatures(gamePlay, typeFace, "GAMEPLAY", 40f);
-			Toast.makeText(context, "Swipe right to see more.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, "Swipe right to see more.", Toast.LENGTH_LONG).show();
         }
 		if(pageNumber==1){
 			rootView = (ViewGroup) inflater.inflate(
