@@ -74,14 +74,17 @@ public class PageViewer extends Fragment {
 				"play with an existing user by clicking on START button.",inflater);
 		addRow(gameHow,"2.","A sequence of color will be displayed on the screen. " +
 				"Remember the sequence and click on CONTINUE. " +
-				"Player can click on REPEAT as many time he/she wants.",inflater);
+				"Player can click on REPEAT to see the sequence again as many times as he/she wants.",inflater);
 		addRow(gameHow,"3.","After clicking on CONTINUE, " +
 				"the player will be presented with	" +
 				"a grid of circles of various colors. " +
 				"Touch the colors in the same sequence as shown before in the given time. ",inflater);
-		addRow(gameHow,"4.","The player can also see the sequence one by one using the cheats. " +
-				"Every new player gets 20 cheats for the first time. " +
-				"Try to finish the game in half the time to earn a cheat.",inflater);
+		addRow(gameHow,"4.","The player can also see the sequence one by one using the CHEATS. " +
+				"Every new player gets 20 CHEATS for the first time. " +
+				"Try to finish the game in half the time to earn a CHEAT.",inflater);
+		addRow(gameHow,"5.","In later stages, FAULTS allowed will increase to give the player " +
+				"a second chance to touch the correct color. FAULTS increase as the number" +
+				" of colors shown in the sequence increases.",inflater);
 		
 		
 		
