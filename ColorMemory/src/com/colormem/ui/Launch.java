@@ -118,6 +118,7 @@ public class Launch extends Activity {
  //============================Start Button Click Handler=========================================//
 				check=0;
 				final Dialog userDialog = new Dialog(Launch.this);
+				userDialog.setCanceledOnTouchOutside(false);
 				userDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				View userDialogView = getLayoutInflater().inflate(R.layout.dialog_user, null);
 				userDialog.setContentView(userDialogView);
@@ -262,6 +263,7 @@ public class Launch extends Activity {
 			case R.id.gameStats:
 				List<User> users = userDAO.getAllUsers();
 				final Dialog statsDialog =  new Dialog(Launch.this);
+				statsDialog.setCanceledOnTouchOutside(false);
 				statsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				View statsView = getLayoutInflater().inflate(R.layout.dialog_stats_list,null);
 				statsDialog.setContentView(statsView);
@@ -314,6 +316,7 @@ public class Launch extends Activity {
  //==================================Settings Start================================================//
 			case R.id.gamesettings:
 				final Dialog settingsDialog = new Dialog(Launch.this);
+				settingsDialog.setCanceledOnTouchOutside(false);
 				settingsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				View gameSettingsView = getLayoutInflater().inflate(R.layout.volumecontrol_setting, null);
 				settingsDialog.setContentView(gameSettingsView);
@@ -445,6 +448,7 @@ public class Launch extends Activity {
 		@Override
 		public boolean onLongClick(View v) {
 			final Dialog alertDialog = new Dialog(Launch.this);
+			alertDialog.setCanceledOnTouchOutside(false);
 			alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			View alertView = getLayoutInflater().inflate(R.layout.edit_user, null);
 			alertDialog.setContentView(alertView);
@@ -501,6 +505,7 @@ public class Launch extends Activity {
 		@Override
 		public void onClick(View v) {
 			final Dialog changeUsername = new Dialog(Launch.this);
+			changeUsername.setCanceledOnTouchOutside(false);
 			changeUsername.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			View changeView = getLayoutInflater().inflate(R.layout.edit_username, null);
 			changeUsername.setContentView(changeView);

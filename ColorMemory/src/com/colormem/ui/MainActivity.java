@@ -171,6 +171,7 @@ public class MainActivity extends Activity {
 		 * will be provided for continue and Repeat which are enabled after the animation ends.
 		 */
 		final Dialog animdialog = new Dialog(MainActivity.this);
+		animdialog.setCanceledOnTouchOutside(false);
 		animdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		View animDialogView = getLayoutInflater().inflate(R.layout.dialog_color_animation, null);
 		animdialog.setContentView(animDialogView);
@@ -468,6 +469,7 @@ public class MainActivity extends Activity {
 				cheats--;
 				SetTextFeatures.setFeatures(cheatButton, dialog_butons, "CHEATS : "+cheats.toString());
 				final Dialog animdialog = new Dialog(MainActivity.this);
+				animdialog.setCanceledOnTouchOutside(false);
 				animdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				View animDialogView = getLayoutInflater().inflate(R.layout.dialog_color_animation, null);
 				animdialog.setContentView(animDialogView);

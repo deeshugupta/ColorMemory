@@ -18,7 +18,6 @@ import com.colormem.ui.R;
 public class ClickSound {
 	
 	private final static MediaPlayer mp = new MediaPlayer();
-	private static boolean isMuted;
 
 
 	public ClickSound() {
@@ -57,13 +56,7 @@ public class ClickSound {
 		mp.release();
 	}
 
-	public static boolean isMuted() {
-		return isMuted;
-	}
-
-	public static void setMuted(boolean isMuted) {
-		ClickSound.isMuted = isMuted;
-	}
+	
 		
 	
 
