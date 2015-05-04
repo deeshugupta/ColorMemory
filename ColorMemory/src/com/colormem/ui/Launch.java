@@ -69,7 +69,7 @@ public class Launch extends Activity {
 		activeuser = userDAO.getActiveUser();
 		//Selecting the Font Family
 		typeFace = Typeface.createFromAsset(getAssets(),
-	            "fonts/KaushanScript-Regular.otf");
+	            "fonts/Aller_Rg.ttf");
 		
 		TextView heading = (TextView) findViewById(R.id.heading);
 		SetTextFeatures.setFeatures(heading, typeFace, "COLOR MEMORY", 40f);

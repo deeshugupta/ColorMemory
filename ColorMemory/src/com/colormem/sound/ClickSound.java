@@ -17,7 +17,7 @@ import com.colormem.ui.R;
 
 public class ClickSound {
 	
-	private final static MediaPlayer mp = new MediaPlayer();
+	private static MediaPlayer mp = new MediaPlayer();
 
 
 	public ClickSound() {
@@ -42,10 +42,10 @@ public class ClickSound {
 		            mp.start();
 		        } catch (IllegalStateException e) {
 		        	if(mp!=null)
-		        		mp.reset();
+		        		mp = new MediaPlayer();
 		        } catch (IOException e) {
 		        	if(mp!=null)
-		        		mp.reset();
+		        		mp = new MediaPlayer();
 		        }
 
 

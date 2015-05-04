@@ -28,7 +28,7 @@ public class PageViewer extends Fragment {
 		this.context=context;
 		this.pageNumber=pageNumber;
 		typeFace = Typeface.createFromAsset(assetManager,
-	            "fonts/KaushanScript-Regular.otf");
+	            "fonts/Aller_Rg.ttf");
 	}
 
 	@Override

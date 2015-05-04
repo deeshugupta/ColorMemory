@@ -106,7 +106,7 @@ public class MainActivity extends Activity {
 		
 		//Defining TypeFace for Text
 		dialog_butons = Typeface.createFromAsset(getAssets(),
-	            "fonts/KaushanScript-Regular.otf");
+	            "fonts/Aller_Rg.ttf");
 		
 		/*
 		 * Length of Animation sequence. This is a naive logic and

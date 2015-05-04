@@ -65,7 +65,7 @@ public class LevelResult extends Activity {
 		
 		//Setting TypeFace
 		Typeface startFace = Typeface.createFromAsset(getAssets(),
-	            "fonts/KaushanScript-Regular.otf");
+	            "fonts/Aller_Rg.ttf");
 		TextView username = (TextView) findViewById(R.id.result_user);
 		SetTextFeatures.setFeatures(username, startFace, "USER : "+userName, 15f);
 		
