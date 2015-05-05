@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.colormem.ui"
-    android:versionCode="2"
-    android:versionName="1.1" >
+    android:versionCode="4"
+    android:versionName="1.3" >
 
     <uses-sdk
-        android:minSdkVersion="19"
+        android:minSdkVersion="16"
         android:targetSdkVersion="22" />
 
     <application
@@ -16,13 +16,15 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" 
-            android:noHistory="true">
+            android:noHistory="true"
+            android:screenOrientation="portrait">
            
         </activity>
         <activity
             android:name=".Launch"
             android:label="@string/app_name" 
-            android:noHistory="true">
+            android:noHistory="true"
+            android:screenOrientation="portrait">
              <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,12 +34,14 @@
         <activity
             android:name=".LevelResult"
             android:label="@string/app_name"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".HelpPageView"
             android:label="@string/app_name"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:screenOrientation="portrait">
             
         </activity>
             
